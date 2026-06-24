@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Racking Systems — Interactive Catalog</title>
+<title>Racking Systems — 3D Catalog</title>
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,7 +18,7 @@
     --steel:#5C636B;
     --stage:#1A1E22;
     --stage-line:#2C3137;
-    --accent:#FFC400;     /* safety yellow */
+    --accent:#FFC400;
     --accent-deep:#E0A800;
     --display:'Archivo', sans-serif;
     --mono:'Space Mono', monospace;
@@ -26,93 +26,48 @@
   }
 
   *{box-sizing:border-box;margin:0;padding:0}
-
   html{scroll-behavior:smooth}
 
   body{
-    font-family:var(--body);
-    color:var(--ink);
-    background-color:var(--paper);
+    font-family:var(--body);color:var(--ink);background-color:var(--paper);
     background-image:
       linear-gradient(var(--line) 1px, transparent 1px),
       linear-gradient(90deg, var(--line) 1px, transparent 1px);
-    background-size:40px 40px;
-    background-position:-1px -1px;
-    line-height:1.5;
-    -webkit-font-smoothing:antialiased;
+    background-size:40px 40px;background-position:-1px -1px;
+    line-height:1.5;-webkit-font-smoothing:antialiased;
   }
 
   .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
 
-  /* ---------- Header ---------- */
-  header{border-bottom:1.5px solid var(--ink);background:rgba(234,235,231,.85);backdrop-filter:blur(4px)}
-  .topbar{
-    display:flex;justify-content:space-between;align-items:center;
-    padding:16px 24px;max-width:1180px;margin:0 auto;
-  }
+  header{border-bottom:1.5px solid var(--ink);background:rgba(234,235,231,.85);backdrop-filter:blur(4px);position:sticky;top:0;z-index:20}
+  .topbar{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;max-width:1180px;margin:0 auto}
   .wordmark{font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.04em;display:flex;align-items:center;gap:9px}
   .wordmark .glyph{width:13px;height:13px;background:var(--ink);position:relative;flex:none}
   .wordmark .glyph::after{content:"";position:absolute;right:0;top:0;width:6px;height:13px;background:var(--accent)}
   .topbar .meta{font-family:var(--mono);font-size:11px;color:var(--steel);letter-spacing:.04em}
 
-  .hero{padding:54px 0 40px;position:relative}
-  .eyebrow{
-    font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;
-    color:var(--steel);display:flex;align-items:center;gap:12px;margin-bottom:22px;
-  }
+  .hero{padding:54px 0 40px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--steel);display:flex;align-items:center;gap:12px;margin-bottom:22px}
   .eyebrow::before{content:"";width:34px;height:8px;background:var(--accent);flex:none}
-  h1{
-    font-family:var(--display);font-weight:800;letter-spacing:-.02em;
-    font-size:clamp(36px,6.4vw,76px);line-height:.98;max-width:14ch;
-  }
+  h1{font-family:var(--display);font-weight:800;letter-spacing:-.02em;font-size:clamp(36px,6.4vw,76px);line-height:.98;max-width:14ch}
   h1 em{font-style:normal;color:var(--steel)}
-  .lede{
-    margin-top:20px;max-width:52ch;font-size:16.5px;color:#33383E;
-  }
+  .lede{margin-top:20px;max-width:52ch;font-size:16.5px;color:#33383E}
   .lede b{font-weight:500;color:var(--ink)}
   .rule{height:1.5px;background:var(--ink);margin-top:34px;position:relative}
   .rule::before,.rule::after{content:"";position:absolute;top:-5px;width:1.5px;height:12px;background:var(--ink)}
   .rule::before{left:0}.rule::after{right:0}
 
-  /* ---------- Layout ---------- */
-  .bench{
-    display:grid;grid-template-columns:236px 1fr;gap:0;
-    border:1.5px solid var(--ink);background:var(--paper);margin:0 0 80px;
-  }
+  .gallery{padding:8px 0 60px;display:flex;flex-direction:column;gap:42px}
 
-  /* index */
-  .index{border-right:1.5px solid var(--ink);background:var(--paper-2)}
-  .index-head{
-    font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--steel);padding:14px 18px;border-bottom:1px solid var(--line-strong);
-  }
-  .sys-btn{
-    width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);
-    padding:16px 18px 15px;cursor:pointer;display:block;position:relative;
-    transition:background .15s ease;font-family:var(--body);
-  }
-  .sys-btn:last-child{border-bottom:0}
-  .sys-btn:hover{background:var(--paper)}
-  .sys-btn .ref{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--steel)}
-  .sys-btn .nm{display:block;font-weight:600;font-size:15.5px;margin-top:4px;letter-spacing:-.01em;color:var(--ink)}
-  .sys-btn::before{
-    content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent);
-    transform:scaleY(0);transform-origin:center;transition:transform .18s ease;
-  }
-  .sys-btn[aria-current="true"]{background:var(--paper)}
-  .sys-btn[aria-current="true"]::before{transform:scaleY(1)}
-  .sys-btn[aria-current="true"] .ref{color:var(--accent-deep)}
+  .bay{border:1.5px solid var(--ink);background:var(--paper)}
+  .bay-head{display:flex;align-items:baseline;gap:16px;padding:16px 22px;border-bottom:1.5px solid var(--ink);flex-wrap:wrap}
+  .bay-head .ref{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--accent-deep);font-weight:700}
+  .bay-head h2{font-family:var(--display);font-weight:800;font-size:clamp(20px,2.6vw,28px);letter-spacing:-.02em}
+  .bay-head .tagline{font-family:var(--mono);font-size:11px;color:var(--steel);letter-spacing:.04em;margin-left:auto}
 
-  /* stage column */
-  .panel{display:flex;flex-direction:column;min-width:0}
+  .stage{position:relative;background:var(--stage);aspect-ratio:16/9;width:100%;overflow:hidden}
+  model-viewer{width:100%;height:100%;background:var(--stage)}
 
-  .stage{
-    position:relative;background:var(--stage);aspect-ratio:16/10;width:100%;
-    overflow:hidden;
-  }
-  model-viewer{width:100%;height:100%;background:var(--stage);--poster-color:transparent}
-
-  /* viewport ticks */
   .tick{position:absolute;width:18px;height:18px;pointer-events:none;z-index:3}
   .tick::before,.tick::after{content:"";position:absolute;background:var(--accent)}
   .tick::before{width:18px;height:1.5px}.tick::after{width:1.5px;height:18px}
@@ -121,44 +76,16 @@
   .tick.bl{bottom:14px;left:14px}.tick.bl::before{bottom:0}.tick.bl::after{bottom:0}
   .tick.br{bottom:14px;right:14px}.tick.br::before{bottom:0;right:0}.tick.br::after{bottom:0;right:0}
 
-  .stage-tag{
-    position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:3;
-    font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;color:#8C949C;
-    text-transform:uppercase;pointer-events:none;
-  }
-
-  /* loading bar */
-  .progress{
-    position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--accent);
-    z-index:4;transition:width .2s ease;
-  }
+  .stage-tag{position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:3;font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;color:#8C949C;text-transform:uppercase;pointer-events:none}
+  .progress{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--accent);z-index:4;transition:width .2s ease}
   .progress.done{opacity:0;transition:opacity .4s ease .1s}
+  .hint{position:absolute;bottom:16px;left:16px;z-index:3;font-family:var(--mono);font-size:10.5px;color:#6F777F;letter-spacing:.05em}
 
-  /* controls */
-  .controls{
-    position:absolute;bottom:14px;right:14px;z-index:3;display:flex;gap:8px;
-  }
-  .ctl{
-    width:38px;height:38px;border:1px solid var(--stage-line);background:rgba(20,24,28,.7);
-    color:#C8CDD2;display:grid;place-items:center;cursor:pointer;border-radius:0;
-    transition:border-color .15s ease,color .15s ease,background .15s ease;
-  }
+  .controls{position:absolute;bottom:14px;right:14px;z-index:3;display:flex;gap:8px}
+  .ctl{width:38px;height:38px;border:1px solid var(--stage-line);background:rgba(20,24,28,.7);color:#C8CDD2;display:grid;place-items:center;cursor:pointer;transition:border-color .15s,color .15s,background .15s}
   .ctl:hover{border-color:var(--accent);color:var(--accent);background:rgba(20,24,28,.9)}
   .ctl svg{width:17px;height:17px;display:block}
   .ctl[hidden]{display:none}
-
-  .hint{
-    position:absolute;bottom:16px;left:16px;z-index:3;
-    font-family:var(--mono);font-size:10.5px;color:#6F777F;letter-spacing:.05em;
-  }
-
-  /* spec sheet */
-  .spec-head{
-    display:flex;justify-content:space-between;align-items:flex-end;gap:16px;
-    padding:22px 26px 18px;border-bottom:1.5px solid var(--ink);
-  }
-  .spec-head h2{font-family:var(--display);font-weight:800;font-size:clamp(22px,3vw,30px);letter-spacing:-.02em}
-  .spec-head .tagline{font-family:var(--mono);font-size:11.5px;color:var(--steel);letter-spacing:.04em;white-space:nowrap}
 
   .specs{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1.5px solid var(--ink)}
   .spec{padding:16px 18px;border-right:1px solid var(--line-strong)}
@@ -166,43 +93,21 @@
   .spec .k{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--steel)}
   .spec .v{font-family:var(--display);font-weight:600;font-size:15px;margin-top:7px;letter-spacing:-.01em;line-height:1.25}
 
-  .desc{padding:24px 26px 28px;max-width:74ch;font-size:15.5px;color:#33383E}
-  .desc::first-line{font-weight:500}
+  .desc{padding:22px 26px 26px;max-width:78ch;font-size:15.5px;color:#33383E}
 
-  /* fade on swap */
-  .swap{transition:opacity .22s ease}
-  .swap.out{opacity:0}
-
-  footer{
-    border-top:1.5px solid var(--ink);padding:26px 0 60px;
-    font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--steel);
-    display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
-  }
+  footer{border-top:1.5px solid var(--ink);padding:26px 0 60px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--steel);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 
   :focus-visible{outline:2.5px solid var(--accent);outline-offset:2px}
 
-  /* mobile */
   @media (max-width:780px){
     body{background-size:32px 32px}
-    .bench{grid-template-columns:1fr}
-    .index{border-right:0;border-bottom:1.5px solid var(--ink)}
-    .index-head{display:none}
-    .sys-list{display:flex;overflow-x:auto;scrollbar-width:none}
-    .sys-list::-webkit-scrollbar{display:none}
-    .sys-btn{border-bottom:0;border-right:1px solid var(--line);min-width:150px;flex:none;padding:13px 16px}
-    .sys-btn::before{top:auto;bottom:0;left:0;right:0;width:auto;height:4px;transform:scaleX(0)}
-    .sys-btn[aria-current="true"]::before{transform:scaleX(1)}
+    .bay-head .tagline{margin-left:0;flex-basis:100%}
     .specs{grid-template-columns:repeat(2,1fr)}
     .spec:nth-child(2){border-right:0}
     .spec:nth-child(1),.spec:nth-child(2){border-bottom:1px solid var(--line-strong)}
-    .spec-head{flex-direction:column;align-items:flex-start;gap:6px}
-    .spec-head .tagline{white-space:normal}
+    .stage{aspect-ratio:4/3}
   }
-
-  @media (prefers-reduced-motion:reduce){
-    *{scroll-behavior:auto}
-    .swap,.sys-btn::before,.progress{transition:none}
-  }
+  @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}.progress{transition:none}}
 </style>
 </head>
 <body>
@@ -218,64 +123,11 @@
   <section class="hero">
     <div class="eyebrow">Interactive Catalog</div>
     <h1>Every racking system, <em>up close.</em></h1>
-    <p class="lede"><b>Rotate, zoom and inspect</b> each storage configuration in three dimensions. Pick a system from the index to load it onto the inspection stage, then drag to orbit and scroll to zoom.</p>
+    <p class="lede"><b>Rotate, zoom and inspect</b> each storage configuration in three dimensions. Drag any model to orbit it, scroll to zoom, and read the spec sheet beneath.</p>
     <div class="rule"></div>
   </section>
-</div>
 
-<div class="wrap">
-  <div class="bench">
-    <!-- INDEX -->
-    <nav class="index" aria-label="Racking systems">
-      <div class="index-head">Systems / 04</div>
-      <div class="sys-list" id="sysList"><!-- buttons injected --></div>
-    </nav>
-
-    <!-- STAGE + SPEC -->
-    <div class="panel">
-      <div class="stage" id="stage">
-        <span class="tick tl"></span><span class="tick tr"></span>
-        <span class="tick bl"></span><span class="tick br"></span>
-        <span class="stage-tag" id="stageTag">INSPECTION STAGE</span>
-
-        <model-viewer id="viewer"
-          camera-controls
-          auto-rotate
-          autoplay
-          shadow-intensity="1"
-          exposure="1.05"
-          environment-image="neutral"
-          interaction-prompt="none"
-          touch-action="pan-y"
-          alt="Racking system 3D model">
-        </model-viewer>
-
-        <div class="progress" id="progress"></div>
-        <div class="hint">DRAG&nbsp;·&nbsp;ROTATE&nbsp;&nbsp;/&nbsp;&nbsp;SCROLL&nbsp;·&nbsp;ZOOM</div>
-        <div class="controls">
-          <button class="ctl" id="btnRotate" title="Pause / resume rotation" aria-label="Pause or resume rotation">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="5" width="3.5" height="14"/><rect x="14.5" y="5" width="3.5" height="14"/></svg>
-          </button>
-          <button class="ctl" id="btnReset" title="Reset view" aria-label="Reset camera view">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 1 1 2.3 5.6"/><path d="M4 18v-4h4"/></svg>
-          </button>
-          <button class="ctl" id="btnAR" title="View in your space (AR)" aria-label="View in augmented reality" hidden>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 4 7v10l8 4 8-4V7l-8-4z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg>
-          </button>
-          <button class="ctl" id="btnFull" title="Fullscreen" aria-label="Toggle fullscreen">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
-          </button>
-        </div>
-      </div>
-
-      <div class="spec-head swap" id="specHead">
-        <h2 id="sysName">—</h2>
-        <div class="tagline" id="sysTagline"></div>
-      </div>
-      <div class="specs swap" id="specGrid"></div>
-      <p class="desc swap" id="sysDesc"></p>
-    </div>
-  </div>
+  <main class="gallery" id="gallery"></main>
 </div>
 
 <div class="wrap">
@@ -321,103 +173,74 @@
     }
   ];
 
-  const viewer   = document.getElementById('viewer');
-  const list     = document.getElementById('sysList');
-  const progress = document.getElementById('progress');
-  const reduced  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let current = -1;
+  const PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5l12 7-12 7z"/></svg>';
+  const PAUSE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="5" width="3.5" height="14"/><rect x="14.5" y="5" width="3.5" height="14"/></svg>';
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const gallery = document.getElementById('gallery');
 
-  // build index
-  SYSTEMS.forEach((s,i)=>{
-    const b=document.createElement('button');
-    b.className='sys-btn';
-    b.type='button';
-    b.innerHTML=`<span class="ref">${s.ref}</span><span class="nm">${s.name}</span>`;
-    b.addEventListener('click',()=>select(i));
-    list.appendChild(b);
+  SYSTEMS.forEach(s=>{
+    const specRows = Object.entries(s.specs)
+      .map(([k,v])=>'<div class="spec"><div class="k">'+k+'</div><div class="v">'+v+'</div></div>').join('');
+
+    const bay = document.createElement('section');
+    bay.className='bay';
+    bay.innerHTML =
+      '<div class="bay-head">'+
+        '<span class="ref">'+s.ref+'</span>'+
+        '<h2>'+s.name+'</h2>'+
+        '<span class="tagline">'+s.tagline+'</span>'+
+      '</div>'+
+      '<div class="stage">'+
+        '<span class="tick tl"></span><span class="tick tr"></span>'+
+        '<span class="tick bl"></span><span class="tick br"></span>'+
+        '<span class="stage-tag">'+s.ref+' — '+s.name.toUpperCase()+'</span>'+
+        '<model-viewer src="'+s.src+'" alt="'+s.name+' 3D model" camera-controls '+(reduced?'':'auto-rotate')+' autoplay loading="lazy" shadow-intensity="1" exposure="1.05" environment-image="neutral" interaction-prompt="none" touch-action="pan-y" ar ar-modes="webxr scene-viewer quick-look"></model-viewer>'+
+        '<div class="progress"></div>'+
+        '<div class="hint">DRAG&nbsp;·&nbsp;ROTATE&nbsp;&nbsp;/&nbsp;&nbsp;SCROLL&nbsp;·&nbsp;ZOOM</div>'+
+        '<div class="controls">'+
+          '<button class="ctl btn-rotate" title="Pause / resume rotation" aria-label="Pause or resume rotation">'+(reduced?PLAY:PAUSE)+'</button>'+
+          '<button class="ctl btn-reset" title="Reset view" aria-label="Reset camera view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 1 1 2.3 5.6"/><path d="M4 18v-4h4"/></svg></button>'+
+          '<button class="ctl btn-ar" title="View in your space (AR)" aria-label="View in augmented reality" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 4 7v10l8 4 8-4V7l-8-4z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg></button>'+
+          '<button class="ctl btn-full" title="Fullscreen" aria-label="Toggle fullscreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>'+
+        '</div>'+
+      '</div>'+
+      '<div class="specs">'+specRows+'</div>'+
+      '<p class="desc">'+s.desc+'</p>';
+    gallery.appendChild(bay);
+
+    const stage    = bay.querySelector('.stage');
+    const viewer   = bay.querySelector('model-viewer');
+    const progress = bay.querySelector('.progress');
+    const btnRot   = bay.querySelector('.btn-rotate');
+    const btnAR    = bay.querySelector('.btn-ar');
+
+    viewer.addEventListener('progress', e=>{
+      const p = Math.round(e.detail.totalProgress*100);
+      progress.style.width = p+'%';
+      if(p>=100) progress.classList.add('done');
+    });
+
+    viewer.addEventListener('load', ()=>{ if(viewer.canActivateAR) btnAR.hidden=false; });
+
+    btnRot.addEventListener('click', ()=>{
+      if(viewer.hasAttribute('auto-rotate')){ viewer.removeAttribute('auto-rotate'); btnRot.innerHTML=PLAY; }
+      else { viewer.setAttribute('auto-rotate',''); btnRot.innerHTML=PAUSE; }
+    });
+
+    bay.querySelector('.btn-reset').addEventListener('click', ()=>{
+      viewer.cameraOrbit='auto auto auto';
+      viewer.cameraTarget='auto auto auto';
+      viewer.fieldOfView='auto';
+      viewer.jumpCameraToGoal && viewer.jumpCameraToGoal();
+    });
+
+    bay.querySelector('.btn-full').addEventListener('click', ()=>{
+      if(!document.fullscreenElement) stage.requestFullscreen && stage.requestFullscreen();
+      else document.exitFullscreen && document.exitFullscreen();
+    });
+
+    btnAR.addEventListener('click', ()=> viewer.activateAR && viewer.activateAR());
   });
-
-  const swapEls = [document.getElementById('specHead'),
-                   document.getElementById('specGrid'),
-                   document.getElementById('sysDesc')];
-
-  function paintInfo(s){
-    document.getElementById('sysName').textContent = s.name;
-    document.getElementById('sysTagline').textContent = s.tagline;
-    document.getElementById('stageTag').textContent = s.ref + ' — ' + s.name.toUpperCase();
-    const grid = document.getElementById('specGrid');
-    grid.innerHTML='';
-    for(const [k,v] of Object.entries(s.specs)){
-      const cell=document.createElement('div');
-      cell.className='spec';
-      cell.innerHTML=`<div class="k">${k}</div><div class="v">${v}</div>`;
-      grid.appendChild(cell);
-    }
-    document.getElementById('sysDesc').textContent = s.desc;
-  }
-
-  function select(i){
-    if(i===current) return;
-    current=i;
-    const s=SYSTEMS[i];
-
-    // active state
-    [...list.children].forEach((b,idx)=>b.setAttribute('aria-current', idx===i ? 'true':'false'));
-
-    // load model + progress
-    progress.classList.remove('done');
-    progress.style.width='0%';
-    viewer.setAttribute('src', s.src);
-    viewer.setAttribute('alt', s.name + ' 3D model');
-
-    // fade info
-    swapEls.forEach(el=>el.classList.add('out'));
-    setTimeout(()=>{ paintInfo(s); swapEls.forEach(el=>el.classList.remove('out')); }, reduced?0:140);
-  }
-
-  // progress bar
-  viewer.addEventListener('progress', e=>{
-    const p=Math.round(e.detail.totalProgress*100);
-    progress.style.width=p+'%';
-    if(p>=100) progress.classList.add('done');
-  });
-
-  // controls
-  const btnRotate=document.getElementById('btnRotate');
-  btnRotate.addEventListener('click',()=>{
-    if(viewer.hasAttribute('auto-rotate')){
-      viewer.removeAttribute('auto-rotate');
-      btnRotate.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5l12 7-12 7z"/></svg>';
-    }else{
-      viewer.setAttribute('auto-rotate','');
-      btnRotate.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="5" width="3.5" height="14"/><rect x="14.5" y="5" width="3.5" height="14"/></svg>';
-    }
-  });
-
-  document.getElementById('btnReset').addEventListener('click',()=>{
-    viewer.cameraOrbit='auto auto auto';
-    viewer.cameraTarget='auto auto auto';
-    viewer.fieldOfView='auto';
-    viewer.jumpCameraToGoal && viewer.jumpCameraToGoal();
-  });
-
-  document.getElementById('btnFull').addEventListener('click',()=>{
-    const stage=document.getElementById('stage');
-    if(!document.fullscreenElement){ stage.requestFullscreen?.(); }
-    else{ document.exitFullscreen?.(); }
-  });
-
-  const btnAR=document.getElementById('btnAR');
-  viewer.addEventListener('load',()=>{
-    if(viewer.canActivateAR){ btnAR.hidden=false; }
-  });
-  btnAR.addEventListener('click',()=>viewer.activateAR && viewer.activateAR());
-
-  // respect reduced motion: no auto-rotate by default
-  if(reduced){ viewer.removeAttribute('auto-rotate'); }
-
-  // init
-  select(0);
 </script>
 </body>
 </html>
